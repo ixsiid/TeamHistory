@@ -1,0 +1,37 @@
+{
+	"players": [{
+		"name": "name1",
+		"image": "pl1",
+		"archived": false,
+		"regist_date": "2021-04-11",
+		"result": [{
+			"race_index": 0,
+			"ranking": 1,
+			"score": 0
+		}]
+	}, {
+		"name": "name2",
+		"image": "pl1",
+		"archived": false,
+		"regist_date": "2021-04-12",
+		"result": [{
+			"race_index": 1,
+			"ranking": 5,
+			"score": 5000
+		}]
+	}, {
+		"name": "name3",
+		"image": "pl1",
+		"archived": true,
+		"regist_date": "2021-04-13",
+		"result": [{
+			"race_index": 1,
+			"ranking": 1,
+			"score": 10000
+		}]
+	}],
+	"teams": [{
+		"name": "Sprinter",
+		"members": ["name1", "name2"]
+	}]
+}
