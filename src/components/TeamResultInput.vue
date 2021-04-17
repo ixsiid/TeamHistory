@@ -5,10 +5,13 @@
       <div class="team_result">
         <div class="player" v-for="(member, i) in team.members" :key="team.name + '_' + member + '_' + i">
           <button type="button" v-on:click="onPlayerChange(team.name, i)">Change</button>
-          <PlayerResultInput :info="players.find(x => x.name == member)" :editable="!!member" />
+          <PlayerResultInput ref="player" :info="players.find(x => x.name == member)" :editable="!!member" />
         </div>
       </div>
-      <select><option v-for="race in races" :key="race.label">{{ race.label }}</option></select>
+      <select class="race_selector" v-model="race">
+        <option value="null"></option>
+        <option v-for="race in races" :key="race.label" :value="race">{{ race.label }}</option>
+      </select>
     </div>
   </div>
 </template>
@@ -27,13 +30,21 @@ export default {
     PlayerResultInput,
   },
   data: function () {
-    return {
-      view: "top",
-    };
+    return { race: null };
   },
   methods: {
     windowLoad: function () {
       // this.scrollParam.target = document.querySelector("#navi");
+    },
+    get_result: function () {
+      return {
+        players: this.$refs.player.map(x => ({ name: x.info.name, score: parseInt(x.score), ranking: parseInt(x.ranking) })),
+        race: this.race,
+      };
+    },
+    clear: function () {
+      this.race = null;
+      this.$refs.player.forEach(x => x.clear());
     },
   },
   mounted: function () {
@@ -66,5 +77,9 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+
+.race_selector {
+  font-size: 130%;
 }
 </style>

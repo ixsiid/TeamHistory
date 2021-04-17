@@ -27,7 +27,7 @@
     <div class="data">
       <button type="button" v-on:click="save(true)">ダウンロード</button>
       <input type="file" v-on:change="load" />
-      <label><input type="checkbox" checked>ファイルの読み込み前に自動保存する</label>
+      <label><input type="checkbox" checked v-model="auto_save">ファイルの読み込み前に自動保存する</label>
       <textarea v-model="encoded_data"></textarea>
     </div>
     <Toast ref="toast" />
@@ -40,7 +40,7 @@ import PlayerSelector from "./components/PlayerSelector.vue";
 import PlayerAdd from './components/PlayerAdd.vue';
 import Toast from './components/Toast.vue';
 
-import sample_data from "./data/sample.json";
+import initial_data from "./data/initial.json";
 import icons from './data/icons.json';
 import races from './data/races.json';
 
@@ -56,7 +56,7 @@ export default {
     return {
       view: "top",
       scrollParam: {},
-      data: sample_data,
+      data: initial_data,
       icons,
       showing_add_dialog: false,
       change_player_info: {
@@ -67,6 +67,7 @@ export default {
       },
       encoded_data: '',
       group_render_count: 0,
+      auto_save: true,
     };
   },
   computed: {
@@ -79,17 +80,13 @@ export default {
   },
   methods: {
     load: function (event) {
-      this.save(true);
+      this.save(this.auto_save);
 
       const file = event.target.files[0];
       if (!file) return false;
       const reader = new FileReader();
       reader.addEventListener('load', e => {
-        console.log(e);
-        console.log(e.target);
-        console.log(e.target.result);
         try {
-          console.log(JSON.parse(e.target.result));
           this.data = JSON.parse(e.target.result);
         } catch(err) {
           this.toast('ファイルの読み込みに失敗しました');
@@ -99,6 +96,8 @@ export default {
     },
     save: function(download_json) {
       this.encoded_data = JSON.stringify(this.data, null, 2);
+      localStorage.setItem('data', this.encoded_data);
+
       if (download_json) {
         const blob = new Blob([JSON.stringify(this.data, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
@@ -150,19 +149,58 @@ export default {
       }
     },
     add_result: function (results) {
-      console.log(results);
+      const race_index = this.data.players.reduce((a, b) => Math.max(a, b.result.reduce((a, b) => Math.max(a, b.race_index), -1)), -1) + 1;
+      const result = ['sprinter', 'mile', 'middle', 'stayer', 'dirt'].map(x => {
+        const race = results[x].race;
+        if (!race) {
+          this.toast(`レースが選択されていません [${x}]`);
+          return [x, false];
+        }
+        const players = results[x].players.filter(x => x.name);
+        if (players.length == 0) return [x, false];
+        if (players.length == 2 && (players[0].name == players[1].name)) {
+          this.toast(`1つのレースで同じ順位は入力できません [${players[0].name}, ${players[1].name}]`);
+          return [x, false];
+        }
+        if (players.length == 3) {
+          if ( (players[0].name == players[1].name) ||
+               (players[0].name == players[2].name) ||
+               (players[1].name == players[2].name) ) {
+            this.toast(`1つのレースで同じ順位は入力できません`);
+            return [x, false];
+          }
+        }
+
+        players.forEach(p => {
+          const q = this.data.players.find(x => x.name == p.name);
+          if (q) {
+            q.result.push({
+              race_index,
+              length: race.length,
+              field: race.field,
+              clockwise: race.clockwise,
+              ranking: p.ranking,
+              score: p.score,
+            });
+          }
+        });
+
+        return [x, true];
+      });
 
       this.save(false);
+
+      return Object.fromEntries(result);
     },
   },
   mounted: function () {
     try {
-      const loadData = JSON.parse(localStorage.data);
+      const loadData = JSON.parse(localStorage.getItem('data'));
       if (loadData.players instanceof Array && loadData.teams instanceof Array) {
         this.data = loadData;
       }
     } catch (e) {
-      console.log('Cannot read from localstorage');
+      this.toast('LocalStorageにデータがありません');
     }
     this.save(false);
 

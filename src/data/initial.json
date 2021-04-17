@@ -1,0 +1,24 @@
+{
+	"players": [],
+	"teams": [{
+		"name": "sprinter",
+		"label": "短距離",
+		"members": []
+	}, {
+		"name": "mile",
+		"label": "マイル",
+		"members": []
+	}, {
+		"name": "middle",
+		"label": "中距離",
+		"members": []
+	}, {
+		"name": "stayer",
+		"label": "長距離",
+		"members": []
+	}, {
+		"name": "dirt",
+		"label": "ダート",
+		"members": []
+	}]
+}

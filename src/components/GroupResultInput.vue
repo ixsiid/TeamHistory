@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="group_result">
-      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" :races="sprinter" :team="formatted_teams.find(x => x.name == 'sprinter')" />
-      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" :races="mile" :team="formatted_teams.find(x => x.name == 'mile')" />
-      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" :races="middle" :team="formatted_teams.find(x => x.name == 'middle')" />
-      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" :races="stayer" :team="formatted_teams.find(x => x.name == 'stayer')" />
-      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" :races="dirt" :team="formatted_teams.find(x => x.name == 'dirt')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="sprinter" :races="sprinter" :team="formatted_teams.find(x => x.name == 'sprinter')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="mile" :races="mile" :team="formatted_teams.find(x => x.name == 'mile')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="middle" :races="middle" :team="formatted_teams.find(x => x.name == 'middle')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="stayer" :races="stayer" :team="formatted_teams.find(x => x.name == 'stayer')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="dirt" :races="dirt" :team="formatted_teams.find(x => x.name == 'dirt')" />
     </div>
-    <button type="button">Regist</button>
+    <button type="button" v-on:click="regist_result">Regist</button>
   </div>
 </template>
 
@@ -23,6 +23,7 @@ export default {
     races: Array,
     teams: Array,
     onPlayerChange: Function,
+    onAddResult: Function,
   },
   data: function () {
     return {};
@@ -43,7 +44,13 @@ export default {
   },
   methods: {
     windowLoad: function () {
-      //      this.scrollParam.target = document.querySelector("#navi");
+      // this.scrollParam.target = document.querySelector("#navi");
+    },
+    regist_result: function () {
+      const results = ['sprinter', 'mile', 'middle', 'stayer', 'dirt'].map(x => ([x, this.$refs[x].get_result()]));
+      Object.entries(this.onAddResult(Object.fromEntries(results))).forEach(([key, r]) => {
+        if (r) this.$refs[key].clear();
+      });
     },
   },
   mounted: function () {

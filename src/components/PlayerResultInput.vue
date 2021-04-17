@@ -1,17 +1,17 @@
 <template>
   <div class="root">
     <div class="player_result">
-      <p class="player_name">{{ info.name }}</p>
+      <p class="player_name">{{ info.name ? info.name : '未設定' }}</p>
       <p class="icon"><img v-bind:src="require(`../assets/image/${info.image}.png`)" /></p>
       <p>{{ result }}</p>
       <div v-if="editable" class="edit">
-        <label class="a1 rank"><input type="radio" :name="info.name + 'rank'" ><span><span>1</span></span></label>
-        <label class="a2 rank"><input type="radio" :name="info.name + 'rank'" ><span><span>2</span></span></label>
-        <label class="a3 rank"><input type="radio" :name="info.name + 'rank'" ><span><span>3</span></span></label>
-        <label class="a4 rank"><input type="radio" :name="info.name + 'rank'" ><span><span>4</span></span></label>
-        <label class="a5 rank"><input type="radio" :name="info.name + 'rank'" ><span><span>5</span></span></label>
-        <label class="ao rank"><input type="radio" :name="info.name + 'rank'" ><span><span>外</span></span></label>
-        <p class="score"><input type="number"></p>
+        <label class="a1 rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="1"><span><span>1</span></span></label>
+        <label class="a2 rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="2"><span><span>2</span></span></label>
+        <label class="a3 rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="3"><span><span>3</span></span></label>
+        <label class="a4 rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="4"><span><span>4</span></span></label>
+        <label class="a5 rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="5"><span><span>5</span></span></label>
+        <label class="ao rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="6"><span><span>外</span></span></label>
+        <p class="score"><input type="number" v-model="score"></p>
       </div>
     </div>
     <div class="graph">
@@ -32,21 +32,22 @@ export default {
     //    Article,
   },
   props: {
-    info: { type: Object, default: () => ({ name: '未設定', image: 'mob', result: [] }) },
+    info: { type: Object, default: () => ({ name: undefined, image: 'mob', result: [] }) },
     editable: { type: Boolean, default: true },
   },
   data: function () {
     return {
-      view: "top",
+      ranking: -1,
+      score: 0,
     };
   },
   computed: {
     borderGraph() {
       const graph = [0, 0, 0, 0, 0];
-      graph[0] = this.info.result.filter(x => x.ranking == 1).length;
-      graph[1] = this.info.result.filter(x => x.ranking == 2).length;
-      graph[2] = this.info.result.filter(x => x.ranking == 3).length;
-      graph[3] = this.info.result.filter(x => x.ranking <= 5).length;
+      graph[0] = this.info.result.filter(x => x.ranking > 0 && x.ranking == 1).length;
+      graph[1] = this.info.result.filter(x => x.ranking > 0 && x.ranking == 2).length;
+      graph[2] = this.info.result.filter(x => x.ranking > 0 && x.ranking == 3).length;
+      graph[3] = this.info.result.filter(x => x.ranking > 0 && x.ranking <= 5).length;
       graph[4] = this.info.result.length - graph[3];
       graph[3] -= graph[0] + graph[1] + graph[2];
 
@@ -73,6 +74,10 @@ export default {
   methods: {
     windowLoad: function () {
       //      this.scrollParam.target = document.querySelector("#navi");
+    },
+    clear: function () {
+      this.ranking = -1;
+      this.score = 0;
     },
   },
   mounted: function () {
