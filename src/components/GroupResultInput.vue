@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="group_result">
-      <div class="team"><TeamResultInput /></div>
-      <div class="team"><TeamResultInput /></div>
-      <div class="team"><TeamResultInput /></div>
-      <div class="team"><TeamResultInput /></div>
-      <div class="team"><TeamResultInput /></div>
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" :races="sprinter" :team="formatted_teams.find(x => x.name == 'sprinter')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" :races="mile" :team="formatted_teams.find(x => x.name == 'mile')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" :races="middle" :team="formatted_teams.find(x => x.name == 'middle')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" :races="stayer" :team="formatted_teams.find(x => x.name == 'stayer')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" :races="dirt" :team="formatted_teams.find(x => x.name == 'dirt')" />
     </div>
     <button type="button">Regist</button>
   </div>
@@ -18,10 +18,28 @@ export default {
   components: {
     TeamResultInput,
   },
+  props: {
+    players: Array,
+    races: Array,
+    teams: Array,
+    onPlayerChange: Function,
+  },
   data: function () {
-    return {
-      view: "top",
-    };
+    return {};
+  },
+  computed: {
+    sprinter: function () { return this.races.filter(x => x.field == 'turf' && x.length <= 1400); },
+    mile: function () { return this.races.filter(x => x.field == 'turf' && x.length > 1400 && x.length <= 1800); },
+    middle: function () { return this.races.filter(x => x.field == 'turf' && x.length > 1800 && x.length <= 2400); },
+    stayer: function () { return this.races.filter(x => x.field == 'turf' && x.length > 2400); },
+    dirt: function () { return this.races.filter(x => x.field == 'dirt' && x.length >= 1600 && x.length <= 1800); },
+    formatted_teams: function () {
+      return this.teams.map(x => {
+        x.members = x.members.filter((_, i) => i < 3);
+        while(x.members.length < 3) x.members.push(undefined);
+        return x;
+      });
+    },
   },
   methods: {
     windowLoad: function () {
@@ -46,11 +64,16 @@ export default {
 
 <style>
 .group_result {
-  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: stretch;
 }
 
-.team {
-  display: inline-block;
-  margin: 0.5em;
+.group_result > * {
+  background-color: #fee;
+  border-radius: 1.5em;
+  padding: 1em 0.5em;
+  margin: 0.5em 0.3em;
 }
 </style>

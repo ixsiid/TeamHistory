@@ -1,13 +1,23 @@
 <template>
   <div>
-    <button type="button">Add</button>
-    <div class="player_selector">
+    <div class="player_selector" v-if="!selectable">
       <PlayerResultInput
         v-for="player in active_players"
         :key="player.name"
         :info="player"
         :editable="false"
       />
+    </div>
+    <div class="player_selector" v-if="selectable">
+      <label v-for="player in active_players" :key="player.name">
+        <input type="radio" name="player_selector" v-model="selected" :value="player.name">
+        <div class="player_selector_shade">
+          <PlayerResultInput
+            :info="player"
+            :editable="false"
+          />
+        </div>
+      </label>
     </div>
   </div>
 </template>
@@ -21,6 +31,7 @@ export default {
   },
   props: {
     players: Array,
+    selectable: { type: Boolean, default: false },
   },
   computed: {
     active_players: function () {
@@ -28,10 +39,12 @@ export default {
     },
   },
   data: function () {
-    return {};
+    return { selected: '', };
   },
   methods: {
     windowLoad: function () {},
+    set(value) { this.selected = value; },
+    get() { return this.selected; },
   },
   mounted: function () {
     window.addEventListener("load", this.windowLoad, {
@@ -59,6 +72,34 @@ export default {
 }
 
 .player_selector > * {
-  margin: 1em;
+  margin: 0.3em;
 }
+
+.player_selector input[type="radio"] {
+  display: none;
+}
+
+.player_selector_shade {
+  display: grid;
+}
+
+.player_selector_shade > * {
+  grid-row: 1;
+  grid-column: 1;
+  padding: 0.8em;
+}
+
+.player_selector input + .player_selector_shade::after {
+  background-color: rgba(0, 0, 0, 0.35);
+  content: '';
+  grid-row: 1;
+  grid-column: 1;
+  border: 3px solid gray;
+}
+
+.player_selector input:checked + .player_selector_shade::after {
+  background-color: rgba(0, 0, 0, 0.0);
+  border-color: yellow;
+}
+
 </style>

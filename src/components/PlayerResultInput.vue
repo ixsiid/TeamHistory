@@ -1,18 +1,18 @@
 <template>
   <div class="root">
     <div class="player_result">
-      <p class="name">{{ info.name }}</p>
+      <p class="player_name">{{ info.name }}</p>
       <p class="icon"><img v-bind:src="require(`../assets/image/${info.image}.png`)" /></p>
+      <p>{{ result }}</p>
       <div v-if="editable" class="edit">
-        <label class="a1 rank"><input type="radio" name="rank" ><span><span>1</span></span></label>
-        <label class="a2 rank"><input type="radio" name="rank" ><span><span>2</span></span></label>
-        <label class="a3 rank"><input type="radio" name="rank" ><span><span>3</span></span></label>
-        <label class="a4 rank"><input type="radio" name="rank" ><span><span>4</span></span></label>
-        <label class="a5 rank"><input type="radio" name="rank" ><span><span>5</span></span></label>
-        <label class="ao rank"><input type="radio" name="rank" ><span><span>外</span></span></label>
+        <label class="a1 rank"><input type="radio" :name="info.name + 'rank'" ><span><span>1</span></span></label>
+        <label class="a2 rank"><input type="radio" :name="info.name + 'rank'" ><span><span>2</span></span></label>
+        <label class="a3 rank"><input type="radio" :name="info.name + 'rank'" ><span><span>3</span></span></label>
+        <label class="a4 rank"><input type="radio" :name="info.name + 'rank'" ><span><span>4</span></span></label>
+        <label class="a5 rank"><input type="radio" :name="info.name + 'rank'" ><span><span>5</span></span></label>
+        <label class="ao rank"><input type="radio" :name="info.name + 'rank'" ><span><span>外</span></span></label>
         <p class="score"><input type="number"></p>
       </div>
-      <p>{{ result }}</p>
     </div>
     <div class="graph">
       <div class="graph-1" :style="borderGraph"></div>
@@ -32,7 +32,7 @@ export default {
     //    Article,
   },
   props: {
-    info: { type: Object, default: () => ({ name: 'Unknown', image: 'mob', result: [] }) },
+    info: { type: Object, default: () => ({ name: '未設定', image: 'mob', result: [] }) },
     editable: { type: Boolean, default: true },
   },
   data: function () {
@@ -121,14 +121,6 @@ export default {
   grid-template-columns: 15fr 15fr 15fr 15fr 15fr 15fr;
 }
 
-.name {
-  background-color: aqua;
-}
-
-.icon {
-  background-color: aqua;
-}
-
 .icon img {
   width: 100%;
 }
@@ -167,7 +159,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: aqua;
 }
 
 .rank > span {
@@ -198,7 +189,6 @@ export default {
 .score {
   grid-row: 4;
   grid-column: 1 / span 6;
-  background-color: aqua;
 }
 
 .score > input {
@@ -236,5 +226,15 @@ export default {
 .graph > *:nth-child(5) {
   border-right-color: yellow;
   flex-grow: var(--flex-grow-5);
+}
+
+.player_name {
+  font-size: 80%;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 </style>
