@@ -2302,5 +2302,11 @@
     "length": 2400,
     "clockwise": true,
     "place": "阪神"
+  },
+  {
+    "field": "turf",
+    "length": 3200,
+    "clockwise": true,
+    "place": "京都"
   }
 ]
