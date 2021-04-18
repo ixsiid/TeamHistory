@@ -6,7 +6,7 @@ module.exports = {
 	pages: {
 		index: {
 			entry: 'src/main.js',
-			title: 'TeamHistory',
+			title: 'ウマ娘 チームレースの記録',
 		}
 	},
 	publicPath: "./",
