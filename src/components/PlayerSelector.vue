@@ -64,14 +64,12 @@ export default {
 
 <style>
 .player_selector {
-  display: flex;
   padding: 0.5em;
   background-color: #eee;
-  width: fit-content;
-  height: fit-content;
 }
 
 .player_selector > * {
+  display: inline-flex;
   margin: 0.3em;
 }
 

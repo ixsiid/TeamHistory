@@ -2,7 +2,12 @@
   <div id="title">
     <div>
       <h1>チームレース履歴</h1>
-      <GroupResultInput :key="group_render_count" :players="data.players" :races="races" :teams="data.teams" :onPlayerChange="change_player" :onAddResult="add_result" />
+      <GroupResultInput :key="group_render_count"
+                        :players="data.players"
+                        :races="races"
+                        :teams="data.teams"
+                        :onPlayerChange="change_player"
+                        :onAddResult="add_result" />
     </div>
     <div>
       <h1>登録ウマ娘<button type="button" v-on:click="showing_add_dialog = true">追加</button></h1>
@@ -25,10 +30,11 @@
       </div>
     </div>
     <div class="data">
-      <button type="button" v-on:click="save(true)">ダウンロード</button>
-      <input type="file" v-on:change="load" />
-      <label><input type="checkbox" checked v-model="auto_save">ファイルの読み込み前に自動保存する</label>
-      <textarea v-model="encoded_data"></textarea>
+      <h1>データ管理</h1>
+      今の記録を<button type="button" v-on:click="save(true)">ダウンロード</button>
+      ローカル<input type="file" v-on:change="load" />
+      <label><input type="checkbox" checked v-model="auto_save">ファイルの読み込み前に今の記録を自動でダウンロードする</label>
+      <textarea v-show="false" v-model="encoded_data"></textarea>
     </div>
     <Toast ref="toast" />
   </div>
@@ -75,7 +81,7 @@ export default {
       length: x.length,
       field: x.field,
       clockwise: x.clockwise,
-      label: `${x.length} ${x.field == 'turf' ? '芝': (x.field == 'dirt' ? 'D' : '不')} ${x.clockwise ? '右' : '左'}`
+      label: `${x.length} ${x.field == 'turf' ? '芝': (x.field == 'dirt' ? 'D' : '不')} ${x.clockwise == null ? '直' : (x.clockwise ? '右' : '左')}`
     })).filter((x, i, a) => a.findIndex(y => y.label == x.label) == i),
   },
   methods: {
@@ -257,7 +263,6 @@ h1 > button {
 
 .selector {
   margin: 0.5em 3em;
-  overflow-x: scroll;
   background-color: #ffe;
   border-radius: 2em;
 }
@@ -299,11 +304,13 @@ h1 > button {
   background-color: white;
   padding: 2em;
   border-radius: 3em;
+  width: 87%;
 }
 
 .data {
   width: 90%;
   margin: 1em auto;
+  text-align: center;
 }
 
 .data > textarea {
@@ -314,7 +321,7 @@ h1 > button {
 .data > button,
 .data > input,
 .data > label {
-  margin: 0.2em 2em;
+  margin: 0.2em 2em 0.2em 0.05em;
 }
 
 </style>

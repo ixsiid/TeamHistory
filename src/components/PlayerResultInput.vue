@@ -168,7 +168,7 @@ export default {
 
 .rank > span {
   border: 1px solid gray;
-  background-color: #eee;
+  background-color: #fff;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -176,9 +176,13 @@ export default {
   width: 1.5em;
   height: 1.5em;
 
-  font-size: 80%;
+  font-size: 100%;
   
   color: gray;
+}
+
+.rank > span:hover {
+  background-color: #ddd;;
 }
 
 .rank input {
@@ -186,7 +190,7 @@ export default {
 }
 
 .rank input:checked + span {
-  background-color: #ccc;
+  background-color: rgb(255, 118, 27);
   font-weight: bold;
   color: white;
 }
@@ -213,23 +217,23 @@ export default {
 }
 
 .graph > *:nth-child(1) {
-  border-right-color: orange;
+  border-right-color: rgb(255, 187, 0);
   flex-grow: var(--flex-grow-1);
 }
 .graph > *:nth-child(2) {
-  border-right-color: black;
+  border-right-color: rgb(224, 2, 176);
   flex-grow: var(--flex-grow-2);
 }
 .graph > *:nth-child(3) {
-  border-right-color: blue;
+  border-right-color: rgb(62, 29, 251);
   flex-grow: var(--flex-grow-3);
 }
 .graph > *:nth-child(4) {
-  border-right-color: lightgray;
+  border-right-color: rgb(133, 133, 133);
   flex-grow: var(--flex-grow-4);
 }
 .graph > *:nth-child(5) {
-  border-right-color: yellow;
+  border-right-color: rgb(36, 36, 36);
   flex-grow: var(--flex-grow-5);
 }
 

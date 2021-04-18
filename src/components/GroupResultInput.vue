@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="text-align: center">
     <div class="group_result">
       <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="sprinter" :races="sprinter" :team="formatted_teams.find(x => x.name == 'sprinter')" />
       <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="mile" :races="mile" :team="formatted_teams.find(x => x.name == 'mile')" />
@@ -7,7 +7,7 @@
       <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="stayer" :races="stayer" :team="formatted_teams.find(x => x.name == 'stayer')" />
       <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="dirt" :races="dirt" :team="formatted_teams.find(x => x.name == 'dirt')" />
     </div>
-    <button type="button" v-on:click="regist_result">Regist</button>
+    <button type="button" v-on:click="regist_result">レース結果を登録</button>
   </div>
 </template>
 
@@ -29,11 +29,11 @@ export default {
     return {};
   },
   computed: {
-    sprinter: function () { return this.races.filter(x => x.field == 'turf' && x.length <= 1400); },
-    mile: function () { return this.races.filter(x => x.field == 'turf' && x.length > 1400 && x.length <= 1800); },
-    middle: function () { return this.races.filter(x => x.field == 'turf' && x.length > 1800 && x.length <= 2400); },
-    stayer: function () { return this.races.filter(x => x.field == 'turf' && x.length > 2400); },
-    dirt: function () { return this.races.filter(x => x.field == 'dirt' && x.length >= 1600 && x.length <= 1800); },
+    sprinter: function () { return this.races.filter(x => x.field == 'turf' && x.length <= 1400).sort((a, b) => a.length == b.length ? a.clockwise - b.clockwise : a.length - b.length); },
+    mile: function () { return this.races.filter(x => x.field == 'turf' && x.length > 1400 && x.length <= 1800).sort((a, b) => a.length == b.length ? a.clockwise - b.clockwise : a.length - b.length); },
+    middle: function () { return this.races.filter(x => x.field == 'turf' && x.length > 1800 && x.length <= 2400).sort((a, b) => a.length == b.length ? a.clockwise - b.clockwise : a.length - b.length); },
+    stayer: function () { return this.races.filter(x => x.field == 'turf' && x.length > 2400).sort((a, b) => a.length == b.length ? a.clockwise - b.clockwise : a.length - b.length); },
+    dirt: function () { return this.races.filter(x => x.field == 'dirt' && x.length >= 1600 && x.length <= 1800).sort((a, b) => a.length == b.length ? a.clockwise - b.clockwise : a.length - b.length); },
     formatted_teams: function () {
       return this.teams.map(x => {
         x.members = x.members.filter((_, i) => i < 3);
@@ -75,10 +75,11 @@ export default {
   flex-wrap: wrap;
   flex-direction: row;
   align-items: stretch;
+  justify-content: center;
 }
 
 .group_result > * {
-  background-color: #fee;
+  background-color: rgb(211, 245, 195);
   border-radius: 1.5em;
   padding: 1em 0.5em;
   margin: 0.5em 0.3em;
