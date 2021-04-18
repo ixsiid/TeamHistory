@@ -35,6 +35,7 @@
       ローカル<input type="file" v-on:change="load" />
       <label><input type="checkbox" checked v-model="auto_save">ファイルの読み込み前に今の記録を自動でダウンロードする</label>
       <textarea v-show="false" v-model="encoded_data"></textarea>
+      <p>リポジトリ: <a href="https://github.com/ixsiid/TeamHistory">Github</a></p>
     </div>
     <Toast ref="toast" />
   </div>
