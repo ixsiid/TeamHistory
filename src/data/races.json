@@ -2284,5 +2284,23 @@
     "length": 3000,
     "clockwise": true,
     "place": "京都"
+  },
+  {
+    "field": "turf",
+    "length": 1600,
+    "clockwise": true,
+    "place": "中山"
+  },
+  {
+    "field": "turf",
+    "length": 1400,
+    "clockwise": true,
+    "place": "京都"
+  },
+  {
+    "field": "turf",
+    "length": 2400,
+    "clockwise": true,
+    "place": "阪神"
   }
 ]
