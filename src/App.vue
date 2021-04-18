@@ -61,6 +61,7 @@ export default {
   },
   data: function () {
     return {
+      version: [1,0,2],
       view: "top",
       scrollParam: {},
       data: initial_data,
@@ -102,6 +103,7 @@ export default {
       reader.readAsText(file);
     },
     save: function(download_json) {
+      this.data.version = this.version.join(".");
       this.encoded_data = JSON.stringify(this.data, null, 2);
       localStorage.setItem('data', this.encoded_data);
 
@@ -109,7 +111,7 @@ export default {
         const blob = new Blob([JSON.stringify(this.data, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
         a.setAttribute('href', URL.createObjectURL(blob));
-        a.setAttribute('download', `umamusume_team_history_${new Date().getTime()}.json`);
+        a.setAttribute('download', `uma_team_${new Date().toISOString().substr(0, 10)}_${new Date().getTime()}.json`);
         a.click();
       }
     },
@@ -128,7 +130,11 @@ export default {
         this.toast('選手登録時の名前は重複できません');
         return false;
       }
-      this.data.players.push(Object.assign(player, { archived: false, result: []}));
+      this.data.players.push(Object.assign(player, {
+        archived: false,
+        result: [],
+        regist_date: new Date().toISOString().substr(0, 10),
+      }));
       this.save(false);
       this.toast(`'${player.name}'を登録しました。`);
       return true;
