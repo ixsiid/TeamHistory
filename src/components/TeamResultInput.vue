@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="team_container">
-      <h3 class="team_title">{{ team.label }}<span class="team_rate">勝率<span :class="rate > 0.8 ? 'perfect' : rate > 0.6 ? 'good' : rate > 0.3 ? 'normal' : 'bad'">{{ (rate * 100).toFixed(1) }}</span>%</span></h3>
+      <h3 class="team_title">{{ team.label }}<span class="team_rate">勝率<span :class="rate > 0.8 ? 'perfect' : rate > 0.6 ? 'good' : rate > 0.3 ? 'normal' : 'bad'">{{ (rate * 100).toFixed(0) }}</span>%</span></h3>
       <div class="team_result">
         <div class="player" v-for="(member, i) in team.members" :key="team.name + '_' + member + '_' + i">
           <button class="change_button" type="button" v-on:click="onPlayerChange(team.name, i)" title="入れ替え"></button>

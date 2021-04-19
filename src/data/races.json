@@ -2314,5 +2314,11 @@
     "length": 2200,
     "clockwise": true,
     "place": "阪神"
+  },
+  {
+    "field": "turf",
+    "length": 2500,
+    "clockwise": true,
+    "place": "中山"
   }
 ]

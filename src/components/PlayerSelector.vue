@@ -64,13 +64,12 @@ export default {
 
 <style>
 .player_selector {
-  padding: 0.5em;
   background-color: #eee;
 }
 
 .player_selector > * {
   display: inline-flex;
-  margin: 0.3em;
+  margin: 0.5em 0.7em;
 }
 
 .player_selector input[type="radio"] {
