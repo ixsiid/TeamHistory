@@ -5,7 +5,7 @@
     <div class="icon_list">
       <label class="icon" v-for="icon in icons" :key="icon">
         <input type="radio" name="add_player_icon" :value="icon" v-model="image">
-        <div class="shade"><img :src="require(`../assets/image/${icon}.png`)" :alt="icon" :title="icon" /></div>
+        <div class="shade"><img :src="require(`../assets/character/${icon}.png`)" :alt="icon" :title="icon" /></div>
       </label>
     </div>
     <button type="button" v-on:click="add_player">追加</button>

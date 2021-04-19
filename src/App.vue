@@ -10,7 +10,7 @@
                         :onAddResult="add_result" />
     </div>
     <div>
-      <h1>登録ウマ娘<button type="button" v-on:click="showing_add_dialog = true">追加</button></h1>
+      <h1>登録ウマ娘<button class="add_player_button" type="button" v-on:click="showing_add_dialog = true" title="追加" /></h1>
       <PlayerSelector class="selector" :players="data.players" />      
     </div>
     <div class="dialog_background" v-show="showing_add_dialog" v-on:click="showing_add_dialog = false">
@@ -88,6 +88,7 @@ export default {
   },
   methods: {
     load: function (event) {
+      console.log(event);
       this.save(this.auto_save);
 
       const file = event.target.files[0];
@@ -329,6 +330,24 @@ h1 > button {
 .data > input,
 .data > label {
   margin: 0.2em 2em 0.2em 0.05em;
+}
+
+.add_player_button {
+  width: 2em;
+  height: 2em;
+  padding: 0.5em;
+  margin: 0 0 0 1em;
+  background-image: url('./assets/icon/plus.png');
+  background-size: 2em;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.add_player_button:hover {
+  background-color: rgb(36, 233, 240);
 }
 
 </style>

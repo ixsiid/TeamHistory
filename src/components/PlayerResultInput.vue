@@ -2,7 +2,7 @@
   <div class="root">
     <div class="player_result">
       <p class="player_name">{{ info.name ? info.name : '未設定' }}</p>
-      <p class="icon"><img v-bind:src="require(`../assets/image/${info.image}.png`)" /></p>
+      <p class="icon"><img v-bind:src="require(`../assets/character/${info.image}.png`)" :alt="info.image" :title="info.image" /></p>
       <p>{{ result }}</p>
       <div v-if="editable" class="edit">
         <label class="a1 rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="1"><span><span>1</span></span></label>
@@ -127,7 +127,9 @@ export default {
 }
 
 .icon img {
-  width: 100%;
+  width: 95%;
+  border-radius: 1.5em;
+  border: 1px solid rgb(66, 0, 0);
 }
 
 .a1 {
@@ -209,6 +211,7 @@ export default {
   flex-wrap: nowrap;
   flex-direction: column-reverse;
   flex-grow: 1;
+  margin-left: 0.1em;
 }
 
 .graph > * {
