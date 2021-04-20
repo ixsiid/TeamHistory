@@ -34,6 +34,8 @@ export default {
   },
   computed: {
     rate() {
+      if (this.players.length == 0) return NaN;
+      
       const race_filter = {
         sprinter: race => race.field == 'turf' && race.length <= 1400,
         mile: race => race.field == 'turf' && race.length > 1400 && race.length <= 1800,
@@ -43,10 +45,10 @@ export default {
       };
       
       // レース結果一覧
-      const results = this.team.members.map(x => 
-                        this.players.find(y => y.name == x)
-                            .result.filter(race_filter[this.team.name]))
-                                       .reduce((a, b) => a.concat(b), []);
+      let results = this.team.members.map(x =>
+                              this.players.find(y => y.name == x)
+                                          .result.filter(race_filter[this.team.name]))
+                                     .reduce((a, b) => a.concat(b), []);
                                        
       // race_indexの索引
       const indecies = results.map(x => x.race_index)
@@ -68,6 +70,12 @@ export default {
         players: this.$refs.player.map(x => ({ name: x.info.name, score: parseInt(x.score), ranking: parseInt(x.ranking) })),
         race: this.race,
       };
+    },
+    set_result(result) {
+      const label = `${result.length} ${result.field == 'turf' ? '芝' : 'D'} ${result.clockwise == null ? '直' : result.clockwise ? '右' : '左'}`;
+      this.race = this.races.find(x => x.label == label);
+      result.ranking.forEach((x, i) => this.$refs.player[i].set_ranking(x));
+      console.log(this.race);
     },
     clear: function () {
       this.race = null;

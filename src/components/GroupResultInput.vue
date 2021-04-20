@@ -7,16 +7,31 @@
       <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="stayer" :races="stayer" :team="formatted_teams.find(x => x.name == 'stayer')" />
       <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="dirt" :races="dirt" :team="formatted_teams.find(x => x.name == 'dirt')" />
     </div>
+    <OpenCV style="display: none;" ref="opencv"
+       :allow="require('../assets/template/allow.png')"
+       :ranking="require('../assets/template/ranking.png')"
+       :field="require('../assets/template/field.png')"
+       :length="require('../assets/template/length.png')"
+       :rotate="require('../assets/template/rotate.png')"
+       :callback="onImageDone" />
+    <label style="margin-right: 3em;">
+      <input type="text" @paste="onPaste" style="width: 18em;" placeholder="スクリーンショットをここにペースト" />
+      {{ opencv_status }}
+    </label>
+
     <button type="button" v-on:click="regist_result">レース結果を登録</button>
   </div>
 </template>
 
 <script>
 import TeamResultInput from "./TeamResultInput.vue";
+import OpenCV from './OpenCV.vue';
+
 export default {
   name: "GroupResultInput",
   components: {
     TeamResultInput,
+    OpenCV,
   },
   props: {
     players: Array,
@@ -26,7 +41,7 @@ export default {
     onAddResult: Function,
   },
   data: function () {
-    return {};
+    return { opencv_status: 'ペースト可能' };
   },
   computed: {
     sprinter: function () { return this.races.filter(x => x.field == 'turf' && x.length <= 1400).sort((a, b) => a.length == b.length ? a.clockwise - b.clockwise : a.length - b.length); },
@@ -51,6 +66,30 @@ export default {
       Object.entries(this.onAddResult(Object.fromEntries(results))).forEach(([key, r]) => {
         if (r) this.$refs[key].clear();
       });
+    },
+    onPaste(event) {
+      this.opencv_status = '画像処理中';
+      
+      if (event.clipboardData.items.length == 0) return false;
+
+      const item = event.clipboardData.items[0];
+      if(!item.type.startsWith('image')) return false;
+
+      const file = item.getAsFile();
+      this.$refs.opencv.run(URL.createObjectURL(file));
+      
+      return false;
+    },
+    opencv() {
+      // Test function
+      console.log(this.$refs.opencv.run(require('../assets/template/sample3.png')));
+    },
+    onImageDone(result) {
+      this.opencv_status = result ? '読み取り成功' : '読み取り失敗';
+      if (result) {
+        ['sprinter', 'mile', 'middle', 'stayer', 'dirt'].forEach(x => this.$refs[x].set_result(result[x]));
+      }
+      setTimeout(() => this.opencv_status = 'ペースト可能', 3000);
     },
   },
   mounted: function () {

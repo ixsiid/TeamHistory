@@ -72,12 +72,14 @@ export default {
     },
   },
   methods: {
-    windowLoad: function () {
-      //      this.scrollParam.target = document.querySelector("#navi");
-    },
+    windowLoad: function () {},
     clear: function () {
       this.ranking = -1;
       this.score = 0;
+    },
+    set_ranking(value) {
+      console.log(value);
+      if (value > 0) this.ranking = Math.min(value, 6);
     },
   },
   mounted: function () {
