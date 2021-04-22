@@ -32,7 +32,7 @@ export default {
     return {
       opencv_file_index: 0,
       opencv_processing: false,
-      opencv_files: Array(8).fill(0).map((_, i) => require(`./assets/template/sample${i + 1}.png`)),
+      opencv_files: Array(9).fill(0).map((_, i) => require(`./assets/template/sample${i + 1}.png`)),
       opencv_results: [{
         sprinter: { field: 'turf', length: 1200, clockwise: true,  ranking: [1,5,7] },
         mile: {     field: 'turf', length: 1600, clockwise: false, ranking: [5,1,6] },
@@ -83,6 +83,12 @@ export default {
         middle: {   field: 'turf', length: 2000, clockwise: false, ranking: [5,4,2] },
         stayer: {   field: 'turf', length: 2500, clockwise: false, ranking: [2,6,4] },
         dirt: {     field: 'dirt', length: 1700, clockwise: true,  ranking: [1,4,5] },
+      }, {
+        sprinter: { field: 'turf', length: 1200, clockwise: true,  ranking: [1,4,3] },
+        mile: {     field: 'turf', length: 1600, clockwise: true,  ranking: [5,4,2] },
+        middle: {   field: 'turf', length: 2400, clockwise: false, ranking: [0,1,3] },
+        stayer: {   field: 'turf', length: 3000, clockwise: true,  ranking: [2,6,1] },
+        dirt: {     field: 'dirt', length: 1700, clockwise: true,  ranking: [5,1,3] },
       }],
       opencv_result_view: [],
     };
