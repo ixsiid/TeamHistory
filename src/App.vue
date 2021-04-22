@@ -83,6 +83,7 @@ export default {
       clockwise: x.clockwise,
       label: `${x.length} ${x.field == 'turf' ? '芝': (x.field == 'dirt' ? 'D' : '不')} ${x.clockwise == null ? '直' : (x.clockwise ? '右' : '左')}`
     })).filter((x, i, a) => a.findIndex(y => y.label == x.label) == i),
+    debug: () => window.location.hostname.startsWith('localhost'),
   },
   methods: {
     load: function (event) {
@@ -203,7 +204,6 @@ export default {
 
       return Object.fromEntries(result);
     },
-    debug: () => window.location.hostname.startsWith('localhost'),
   },
   mounted: function () {
     try {
