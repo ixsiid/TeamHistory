@@ -1,7 +1,16 @@
 <template>
   <div>
     <div class="team_container">
-      <h3 class="team_title">{{ team.label }}<span class="team_rate">勝率<span :class="rate > 0.8 ? 'perfect' : rate > 0.6 ? 'good' : rate > 0.3 ? 'normal' : 'bad'">{{ (rate * 100).toFixed(0) }}</span>%</span></h3>
+      <h3 class="team_title">{{
+        team.label
+        }}<span class="team_rate"
+        >勝率<span
+          :class="rate > 0.8 ? 'perfect' : rate > 0.6 ? 'good' : rate > 0.3 ? 'normal' : 'bad'"
+          >{{
+            (rate * 100).toFixed(0)
+          }}</span>%</span>
+        <button type="button" class="info_button" v-on:click="$refs.info.show()" />
+      </h3>
       <div class="team_result">
         <div class="player" v-for="(member, i) in team.members" :key="team.name + '_' + member + '_' + i">
           <button class="change_button" type="button" v-on:click="onPlayerChange(team.name, i)" title="入れ替え"></button>
@@ -13,11 +22,22 @@
         <option v-for="race in races" :key="race.label" :value="race">{{ race.label }}</option>
       </select>
     </div>
+    <TeamRaceInfo :results="results" :name="team.name" ref="info" />
   </div>
 </template>
 
 <script>
 import PlayerResultInput from "./PlayerResultInput.vue";
+import TeamRaceInfo from './TeamRaceInfo.vue';
+
+const race_filter = {
+  sprinter: race => race.field == 'turf' && race.length <= 1400,
+  mile: race => race.field == 'turf' && race.length > 1400 && race.length <= 1800,
+  middle: race => race.field == 'turf' && race.length > 1800 && race.length <= 2400,
+  stayer: race => race.field == 'turf' && race.length > 2400,
+  dirt: race => race.field == 'dirt',
+};
+
 export default {
   name: "TeamResultInput",
   props: {
@@ -28,27 +48,29 @@ export default {
   },
   components: {
     PlayerResultInput,
+    TeamRaceInfo,
   },
   data: function () {
     return { race: null };
   },
   computed: {
+    results() {
+      if (this.players.length == 0) return [];
+      
+      return this.players.map(x => x.result)
+              .flat()
+              .filter(race_filter[this.team.name])
+              .sort((a, b) => a.race_index - b.race_index);
+    },
     rate() {
       if (this.players.length == 0) return NaN;
       
-      const race_filter = {
-        sprinter: race => race.field == 'turf' && race.length <= 1400,
-        mile: race => race.field == 'turf' && race.length > 1400 && race.length <= 1800,
-        middle: race => race.field == 'turf' && race.length > 1800 && race.length <= 2400,
-        stayer: race => race.field == 'turf' && race.length > 2400,
-        dirt: race => race.field == 'dirt',
-      };
-      
-      // レース結果一覧
-      let results = this.team.members.map(x =>
-                              this.players.find(y => y.name == x)
-                                          .result.filter(race_filter[this.team.name]))
-                                     .reduce((a, b) => a.concat(b), []);
+      const results = this.team.members.map(x =>
+                              this.players
+                                  .find(y => y.name == x)
+                                  .result
+                                  .filter(race_filter[this.team.name]))
+                              .reduce((a, b) => a.concat(b), []);
                                        
       // race_indexの索引
       const indecies = results.map(x => x.race_index)
@@ -75,7 +97,6 @@ export default {
       const label = `${result.length} ${result.field == 'turf' ? '芝' : 'D'} ${result.clockwise == null ? '直' : result.clockwise ? '右' : '左'}`;
       this.race = this.races.find(x => x.label == label);
       result.ranking.forEach((x, i) => this.$refs.player[i].set_ranking(x));
-      console.log(this.race);
     },
     clear: function () {
       this.race = null;
@@ -173,5 +194,18 @@ export default {
 
 .change_button:hover {
   background-color: rgb(248, 248, 139);
+}
+
+.info_button {
+  margin-left: 1em;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  border: none;
+  background-color: white;
+}
+
+.info_button:hover {
+  background-color: gray;
 }
 </style>

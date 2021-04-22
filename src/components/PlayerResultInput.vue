@@ -78,7 +78,6 @@ export default {
       this.score = 0;
     },
     set_ranking(value) {
-      console.log(value);
       if (value > 0) this.ranking = Math.min(value, 6);
     },
   },

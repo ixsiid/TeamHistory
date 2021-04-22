@@ -9,16 +9,11 @@
                         :onPlayerChange="change_player"
                         :onAddResult="add_result" />
     </div>
-    <div>
-      <h1>登録ウマ娘<button class="add_player_button" type="button" v-on:click="showing_add_dialog = true" title="追加" /></h1>
-      <PlayerSelector class="selector" :players="data.players" />      
-    </div>
-    <div class="dialog_background" v-show="showing_add_dialog" v-on:click="showing_add_dialog = false">
-      <div class="dialog" v-on:click.stop="()=>{}">
-        <h2>登録ウマ娘を追加</h2>
-        <PlayerAdd :icons="icons" :callback="add_player" />
-      </div>
-    </div>
+    <PlayerList
+      :onAddPlayer="add_player"
+      :players="data.players"
+      :characters="icons"
+      />
     <div class="change_player_dialog" v-show="change_player_info.showing" v-on:click="change_player_info.showing = false">
       <div v-on:click.stop="()=>{}">
         <h3>変更するウマ娘を選択してください</h3>
@@ -38,14 +33,17 @@
       <p>リポジトリ: <a href="https://github.com/ixsiid/TeamHistory">Github</a></p>
     </div>
     <Toast ref="toast" />
+    <DebugView v-show="debug" />
   </div>
 </template>
 
 <script>
 import GroupResultInput from "./components/GroupResultInput.vue";
 import PlayerSelector from "./components/PlayerSelector.vue";
-import PlayerAdd from './components/PlayerAdd.vue';
+import PlayerList from './components/PlayerList.vue';
+
 import Toast from './components/Toast.vue';
+import DebugView from './components/DebugView.vue';
 
 import initial_data from "./data/initial.json";
 import icons from './data/icons.json';
@@ -56,17 +54,18 @@ export default {
   components: {
     GroupResultInput,
     PlayerSelector,
-    PlayerAdd,
+    PlayerList,
     Toast,
+    DebugView,
   },
   data: function () {
     return {
+      debug: false,
       version: [1,0,2],
       view: "top",
       scrollParam: {},
       data: initial_data,
       icons,
-      showing_add_dialog: false,
       change_player_info: {
         showing: false,
         race: '',
@@ -143,7 +142,7 @@ export default {
     change_player: function(race, index, name) {
       this.change_player_info.race = race;
       this.change_player_info.index = index;
-      console.log(name);
+      
       if (name) {
         this.change_player_info.showing = false;
         const new_team = this.data.teams.findIndex(x => x.name == race);
@@ -208,6 +207,8 @@ export default {
     },
   },
   mounted: function () {
+    this.debug = window.location.hostname.startsWith('localhost');
+
     try {
       const loadData = JSON.parse(localStorage.getItem('data'));
       if (loadData.players instanceof Array && loadData.teams instanceof Array) {
@@ -223,7 +224,6 @@ export default {
       passive: true,
     });
     dispatchEvent(new PopStateEvent("popstate", {}));
-    
   },
   destroyed: function () {
     window.removeEventListener("load", this.windowLoad, {
@@ -267,12 +267,6 @@ h1 {
 
 h1 > button {
   margin-left: 3em;
-}
-
-.selector {
-  margin: 0.5em 3em;
-  background-color: #ffe;
-  border-radius: 2em;
 }
 
 .dialog_background {
@@ -330,24 +324,6 @@ h1 > button {
 .data > input,
 .data > label {
   margin: 0.2em 2em 0.2em 0.05em;
-}
-
-.add_player_button {
-  width: 2em;
-  height: 2em;
-  padding: 0.5em;
-  margin: 0 0 0 1em;
-  background-image: url('./assets/icon/plus.png');
-  background-size: 2em;
-  background-repeat: no-repeat;
-  background-position: center;
-  border: none;
-  border-radius: 50%;
-  background-color: white;
-}
-
-.add_player_button:hover {
-  background-color: rgb(36, 233, 240);
 }
 
 </style>
