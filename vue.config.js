@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 
 module.exports = {
 	outputDir: path.resolve(__dirname, 'docs'),
@@ -7,7 +6,12 @@ module.exports = {
 		index: {
 			entry: 'src/main.js',
 			title: 'ウマ娘 チームレースの記録',
-		}
+		},
+		test: {
+			entry: 'src/test.js',
+			title: 'テストページ',
+			filename: 'test',
+		},
 	},
 	publicPath: "./",
 };

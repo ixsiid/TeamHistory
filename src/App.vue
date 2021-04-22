@@ -60,7 +60,6 @@ export default {
   },
   data: function () {
     return {
-      debug: false,
       version: [1,0,2],
       view: "top",
       scrollParam: {},
@@ -87,7 +86,6 @@ export default {
   },
   methods: {
     load: function (event) {
-      console.log(event);
       this.save(this.auto_save);
 
       const file = event.target.files[0];
@@ -111,7 +109,7 @@ export default {
         const blob = new Blob([JSON.stringify(this.data, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
         a.setAttribute('href', URL.createObjectURL(blob));
-        a.setAttribute('download', `uma_team_${new Date().toISOString().substr(0, 10)}_${new Date().getTime()}.json`);
+        a.setAttribute('download', `${this.debug ? 'debug_' : ''}uma_team_${new Date().toISOString().substr(0, 10)}_${new Date().getTime()}.json`);
         a.click();
       }
     },
@@ -205,10 +203,9 @@ export default {
 
       return Object.fromEntries(result);
     },
+    debug: () => window.location.hostname.startsWith('localhost'),
   },
   mounted: function () {
-    this.debug = window.location.hostname.startsWith('localhost');
-
     try {
       const loadData = JSON.parse(localStorage.getItem('data'));
       if (loadData.players instanceof Array && loadData.teams instanceof Array) {

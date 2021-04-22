@@ -32,8 +32,6 @@ export default {
       this.$refs.source.setAttribute('src', file);
     },
     process: function () {
-      console.log('start');
-
       const cv = window.cv;
       if (!window.cv) {
         console.log('OpenCVが有効じゃありません');
@@ -145,10 +143,12 @@ export default {
         cv.rectangle(scaled, rect_lt, rect_rb, blue, 2, cv.LINE_8, 0);
 
         return Array(3).fill(null).map((_, i) => {
-          const rect = { x: x + 165 + i * 74, y: y + 115, w: 36, h: 24 };
+          const rect = { x: x + 165 + i * 74, y: y + 117, w: 36, h: 20 };
           const rank_match = match(scaled, rect, template.ranking, green);
 
-          return rank_match.value > 3000000 ? {
+          console.log(`${rank_match.value}: ${!(Math.floor(rank_match.y / 32))}, ${Math.floor(rank_match.x / 45) + 1}`);
+
+          return rank_match.value > 1600000 ? {
             rank: Math.floor(rank_match.x / 45) + 1,
             won: !(Math.floor(rank_match.y / 32))
           } : {
@@ -226,6 +226,4 @@ export default {
 </script>
 
 <style>
-.opencv {
-}
 </style>
