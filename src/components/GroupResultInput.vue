@@ -17,6 +17,7 @@
     <label style="margin-right: 3em;">
       <input type="text" @paste="onPaste" style="width: 18em;" placeholder="スクリーンショットをここにペースト" />
       {{ opencv_status }}
+      <label><input type="checkbox" v-model="save_image" />ペースト画像を保存</label>
     </label>
 
     <button type="button" v-on:click="regist_result">レース結果を登録</button>
@@ -41,7 +42,7 @@ export default {
     onAddResult: Function,
   },
   data: function () {
-    return { opencv_status: 'ペースト可能' };
+    return { opencv_status: 'ペースト可能', save_image: false };
   },
   computed: {
     sprinter: function () { return this.races.filter(x => x.field == 'turf' && x.length <= 1400).sort((a, b) => a.length == b.length ? a.clockwise - b.clockwise : a.length - b.length); },
@@ -75,8 +76,15 @@ export default {
       const item = event.clipboardData.items[0];
       if(!item.type.startsWith('image')) return false;
 
-      const file = item.getAsFile();
-      this.$refs.opencv.run(URL.createObjectURL(file));
+      const image = URL.createObjectURL(item.getAsFile());
+      this.$refs.opencv.run(image);
+
+      if (this.save_image) {
+        const a = document.createElement('a');
+        a.setAttribute('href', image);
+        a.setAttribute('download', `source_${new Date().getTime()}.png`);
+        a.click();
+      }
       
       return false;
     },

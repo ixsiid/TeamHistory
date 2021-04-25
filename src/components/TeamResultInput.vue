@@ -9,7 +9,7 @@
           >{{
             (rate * 100).toFixed(0)
           }}</span>%</span>
-        <button type="button" class="info_button" v-on:click="$refs.info.show()" />
+        <button type="button" class="info_button" v-on:click="$refs.info.show()">i</button>
       </h3>
       <div class="team_result">
         <div class="player" v-for="(member, i) in team.members" :key="team.name + '_' + member + '_' + i">
@@ -203,9 +203,11 @@ export default {
   border-radius: 50%;
   border: none;
   background-color: white;
+  font-weight: 900;
+  vertical-align: middle
 }
 
 .info_button:hover {
-  background-color: gray;
+  background-color: lightgray;
 }
 </style>
