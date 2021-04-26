@@ -21,6 +21,15 @@
         <option hidden value="null">レースを選択</option>
         <option v-for="race in races" :key="race.label" :value="race">{{ race.label }}</option>
       </select>
+      <select class="hidden_selector" v-model="season">
+        <option v-for="v in [null, '春', '夏', '秋', '冬']" :value="v" :key="v">{{ v }}</option>
+      </select>
+      <select class="hidden_selector" v-model="weather">
+        <option v-for="v in [null, '晴れ', '曇り', '雨', '雪']" :value="v" :key="v">{{ v }}</option>
+      </select>
+      <select class="hidden_selector" v-model="weight">
+        <option v-for="v in [null, '良', '稍重', '重', '不良']" :value="v" :key="v">{{ v }}</option>
+      </select>
     </div>
     <TeamRaceInfo :results="results" :name="team.name" ref="info" />
   </div>
@@ -51,7 +60,7 @@ export default {
     TeamRaceInfo,
   },
   data: function () {
-    return { race: null };
+    return { race: null, season: null, weather: null, weight: null };
   },
   computed: {
     results() {
@@ -90,16 +99,22 @@ export default {
     get_result: function () {
       return {
         players: this.$refs.player.map(x => ({ name: x.info.name, score: parseInt(x.score), ranking: parseInt(x.ranking) })),
-        race: this.race,
+        race: Object.assign({ season: this.season, weather: this.weather, weight: this.weight }, this.race),
       };
     },
     set_result(result) {
       const label = `${result.length} ${result.field == 'turf' ? '芝' : 'D'} ${result.clockwise == null ? '直' : result.clockwise ? '右' : '左'}`;
       this.race = this.races.find(x => x.label == label);
       result.ranking.forEach((x, i) => this.$refs.player[i].set_ranking(x));
+      this.season = result.season;
+      this.weight = result.weight;
+      this.weather = result.weather;
     },
     clear: function () {
       this.race = null;
+      this.season = null;
+      this.weather = null;
+      this.weight = null;
       this.$refs.player.forEach(x => x.clear());
     },
   },
@@ -209,5 +224,9 @@ export default {
 
 .info_button:hover {
   background-color: lightgray;
+}
+
+.hidden_selector {
+  display: none;
 }
 </style>

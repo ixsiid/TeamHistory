@@ -193,6 +193,9 @@ export default {
               clockwise: race.clockwise,
               ranking: p.ranking,
               score: p.score,
+              season: race.season,
+              weather: race.weather,
+              weight: race.weight,
             });
           }
         });

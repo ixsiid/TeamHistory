@@ -6,6 +6,9 @@
     <img  id="template_field" :src="field" />
     <img  id="template_length" :src="length" />
     <img  id="template_rotate" :src="rotate" />
+    <img  id="template_season" :src="season" />
+    <img  id="template_weight" :src="weight" />
+    <img  id="template_weather" :src="weather" />
     <canvas id="result" />
   </div>
 </template>
@@ -20,6 +23,9 @@ export default {
     field: String,
     length: String,
     rotate: String,
+    season: String,
+    weight: String,
+    weather: String,
     callback: { type: Function, default: () => {} },
   },
   computed: {},
@@ -42,7 +48,10 @@ export default {
 
       const src = cv.imread(this.id);
       const template = Object.fromEntries(
-        ['allow', 'ranking', 'field', 'length', 'rotate'].map(x => [x, cv.imread(`template_${x}`)])
+        [
+          'allow', 'ranking', 'field',
+          'length', 'rotate',
+          'season', 'weather', 'weight'].map(x => [x, cv.imread(`template_${x}`)])
         );
 
       const scaled = new cv.Mat();
@@ -146,7 +155,7 @@ export default {
           const rect = { x: x + 165 + i * 74, y: y + 117, w: 36, h: 20 };
           const rank_match = match(scaled, rect, template.ranking, green);
 
-          console.log(`${rank_match.value}: ${!(Math.floor(rank_match.y / 32))}, ${Math.floor(rank_match.x / 45) + 1}`);
+          // console.log(`${rank_match.value}: ${!(Math.floor(rank_match.y / 32))}, ${Math.floor(rank_match.x / 45) + 1}`);
 
           return rank_match.value > 1600000 ? {
             rank: Math.floor(rank_match.x / 45) + 1,
@@ -196,12 +205,49 @@ export default {
         return;
       }
 
+      
+      // シーズン
+      const season = base_points.map(([sx, sy]) => {
+        const x = sx + 515;
+        const y = sy + 5;
+        const w = 38;
+        const h = 38;
+        
+        const season_match = match(scaled, {x, y, w, h}, template.season, green);
+        return ([null, '春', '夏', '秋', '冬'])[season_match.value > 8000000 ? Math.floor(season_match.x / 48) + 1 : 0];
+      });
+
+      // 天気
+      const weather = base_points.map(([sx, sy]) => {
+        const x = sx + 562;
+        const y = sy + 5;
+        const w = 38;
+        const h = 38;
+        
+        const weather_match = match(scaled, {x, y, w, h}, template.weather, green);
+        return ([null, '晴れ', '曇り', '雨', '雪'])[weather_match.value > 8000000 ? Math.floor(weather_match.x / 48) + 1 : 0];
+      });
+
+      // バ場
+      const weight = base_points.map(([sx, sy]) => {
+        const x = sx + 611;
+        const y = sy + 12;
+        const w = 20;
+        const h = 22;
+        
+        const weight_match = match(scaled, {x, y, w, h}, template.weight, green);
+        console.log(weight_match.value);
+        return ([null, '良', '稍重', '重', '不良'])[weight_match.value > 3000000 ? Math.floor(weight_match.x / 28) + 1 : 0];
+      });
+      
+      const fieald = index.map(x => ({ season: season[x], weather: weather[x], weight: weight[x] }));
+      
       finish({
-        sprinter: Object.assign(race[index[0]], { ranking: rank[index[0]].map(x => x.rank) }),
-        mile: Object.assign(race[index[1]], { ranking: rank[index[1]].map(x => x.rank) }),
-        middle: Object.assign(race[index[2]], { ranking: rank[index[2]].map(x => x.rank) }),
-        stayer: Object.assign(race[index[3]], { ranking: rank[index[3]].map(x => x.rank) }),
-        dirt: Object.assign(race[index[4]], { ranking: rank[index[4]].map(x => x.rank) }),
+        sprinter: Object.assign(race[index[0]], fieald[0], { ranking: rank[index[0]].map(x => x.rank) }),
+        mile: Object.assign(race[index[1]], fieald[1], { ranking: rank[index[1]].map(x => x.rank) }),
+        middle: Object.assign(race[index[2]], fieald[2], { ranking: rank[index[2]].map(x => x.rank) }),
+        stayer: Object.assign(race[index[3]], fieald[3], { ranking: rank[index[3]].map(x => x.rank) }),
+        dirt: Object.assign(race[index[4]], fieald[4], { ranking: rank[index[4]].map(x => x.rank) }),
       });
 
       return;

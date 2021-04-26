@@ -7,6 +7,9 @@
        :field="require('./assets/template/field.png')"
        :length="require('./assets/template/length.png')"
        :rotate="require('./assets/template/rotate.png')"
+       :weather="require('./assets/template/weather.png')"
+       :weight="require('./assets/template/weight.png')"
+       :season="require('./assets/template/season.png')"
        :callback="onImageDone" />
     <table>
       <tbody>
