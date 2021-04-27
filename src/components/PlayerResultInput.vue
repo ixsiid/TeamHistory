@@ -3,7 +3,7 @@
     <div class="player_result">
       <p class="player_name">{{ info.name ? info.name : '未設定' }}</p>
       <p class="icon"><img v-bind:src="require(`../assets/character/${info.image}.png`)" :alt="info.image" :title="info.image" /></p>
-      <p>{{ result }}</p>
+      <p class="player_desc" :title="`[${grade.join('-')}]`">{{ result }}</p>
       <div v-if="editable" class="edit">
         <label class="a1 rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="1"><span><span>1</span></span></label>
         <label class="a2 rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="2"><span><span>2</span></span></label>
@@ -42,33 +42,32 @@ export default {
     };
   },
   computed: {
-    borderGraph() {
-      const graph = [0, 0, 0, 0, 0];
-      graph[0] = this.info.result.filter(x => x.ranking > 0 && x.ranking == 1).length;
-      graph[1] = this.info.result.filter(x => x.ranking > 0 && x.ranking == 2).length;
-      graph[2] = this.info.result.filter(x => x.ranking > 0 && x.ranking == 3).length;
-      graph[3] = this.info.result.filter(x => x.ranking > 0 && x.ranking <= 5).length;
-      graph[4] = this.info.result.length - graph[3];
-      graph[3] -= graph[0] + graph[1] + graph[2];
+    grade() {
+      const grade = [0, 0, 0, 0, 0];
+      grade[0] = this.info.result.filter(x => x.ranking == 1).length;
+      grade[1] = this.info.result.filter(x => x.ranking == 2).length;
+      grade[2] = this.info.result.filter(x => x.ranking == 3).length;
+      grade[3] = this.info.result.filter(x => x.ranking <= 5).length;
+      grade[4] = this.info.result.length - grade[3];
+      grade[3] -= grade[0] + grade[1] + grade[2];
 
+      return grade;
+    },
+    borderGraph() {
+      if (!this.grade) return {};
+      
       return {
-        '--flex-grow-1': graph[0],
-        '--flex-grow-2': graph[1],
-        '--flex-grow-3': graph[2],
-        '--flex-grow-4': graph[3],
-        '--flex-grow-5': graph[4],
+        '--flex-grow-1': this.grade[0],
+        '--flex-grow-2': this.grade[1],
+        '--flex-grow-3': this.grade[2],
+        '--flex-grow-4': this.grade[3],
+        '--flex-grow-5': this.grade[4],
       };
     },
     result() {
-      const graph = [0, 0, 0, 0, 0];
-      graph[0] = this.info.result.filter(x => x.ranking == 1).length;
-      graph[1] = this.info.result.filter(x => x.ranking == 2).length;
-      graph[2] = this.info.result.filter(x => x.ranking == 3).length;
-      graph[3] = this.info.result.filter(x => x.ranking <= 5).length;
-      graph[4] = this.info.result.length - graph[3];
-      graph[3] -= graph[0] + graph[1] + graph[2];
+      if (!this.grade) return '';
 
-      return `${graph[0]}-${graph[1]}-${graph[2]}-${graph[3]}-${graph[4]} (${this.info.result.length})`;
+      return `${this.info.result.length}戦 ${this.grade[0]}勝`;
     },
   },
   methods: {
@@ -249,5 +248,9 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
+}
+
+.player_desc {
+  font-size: 80%;
 }
 </style>
