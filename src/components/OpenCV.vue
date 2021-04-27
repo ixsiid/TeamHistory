@@ -141,6 +141,7 @@ export default {
 
         scale = 212 / dy[1];
       }
+      console.log(scale);
       cv.resize(src, scaled, new cv.Size(src.cols * scale, src.rows * scale));
       const center = [0, 1].map(t => Math.ceil(allows.reduce((a,b) => a + b[t], 0) / 4));
       const base_points = Array(5).fill(0).map((_, i) => [center[0] - 330, center[1] - 500 + 212 * i]);
@@ -168,8 +169,8 @@ export default {
       
       // レース種別をテンプレートマッチングで取得
       const race = base_points.map(([_x, _y]) => {
-        const y = _y + 12;
-        const h = 24;
+        const y = _y + 13;
+        const h = 21;
         let x = _x + 192;
 
         const field_match = match(scaled, { x, w:25, y, h }, template.field, red);
@@ -201,6 +202,7 @@ export default {
       ]
       if (index.filter(x => x < 0).length > 0) {
         console.log('認識失敗');
+        console.error(index);
         finish();
         return;
       }
