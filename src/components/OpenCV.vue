@@ -178,13 +178,14 @@ export default {
 
         x += field == 'turf' ? 30 : 73;
         const length_match = match(scaled, { x, w:80, y, h }, template.length, red);
+        console.log(length_match.value);
         const length = ([
           0,
           1000, 1200, 1400,
           1500, 1600, 1700, 1800,
           2000, 2200, 2300, 2400,
           2500, 2600, 3000, 3200, 3400, 3600])[
-            length_match.value > 18000000 ? Math.floor(length_match.y / 32) + 1 : 0
+            length_match.value > 16000000 ? Math.floor(length_match.y / 32) + 1 : 0
           ];
 
         x += 177;
@@ -203,6 +204,7 @@ export default {
       if (index.filter(x => x < 0).length > 0) {
         console.log('認識失敗');
         console.error(index);
+        console.error(race);
         finish();
         return;
       }
