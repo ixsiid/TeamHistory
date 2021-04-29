@@ -1,5 +1,6 @@
 <template>
   <div id="title">
+    <Version />
     <div>
       <h1>チームレース履歴</h1>
       <GroupResultInput :key="group_render_count"
@@ -42,6 +43,7 @@ import GroupResultInput from "./components/GroupResultInput.vue";
 import PlayerSelector from "./components/PlayerSelector.vue";
 import PlayerList from './components/PlayerList.vue';
 
+import Version from './components/Version.vue';
 import Toast from './components/Toast.vue';
 import DebugView from './components/DebugView.vue';
 
@@ -55,6 +57,7 @@ export default {
     GroupResultInput,
     PlayerSelector,
     PlayerList,
+    Version,
     Toast,
     DebugView,
   },

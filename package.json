@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "npm version patch && vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "repository": {
