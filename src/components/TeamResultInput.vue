@@ -3,12 +3,14 @@
     <div class="team_container">
       <h3 class="team_title">{{
         team.label
-        }}<span class="team_rate"
-        >勝率<span
-          :class="rate > 0.8 ? 'perfect' : rate > 0.6 ? 'good' : rate > 0.3 ? 'normal' : 'bad'"
-          >{{
-            (rate * 100).toFixed(0)
-          }}</span>%</span>
+        }}<span v-if="kind == 'rate'" class="team_rate"
+        >勝率<span :class="rate > 0.8 ? 'perfect' : rate > 0.6 ? 'good' : rate > 0.3 ? 'normal' : 'bad'"
+        >{{
+          (rate * 100).toFixed(0)
+        }}</span>%</span>
+        <span v-if="kind == 'point'" class="team_rate"
+        ><span :class="rate > 8 ? 'perfect' : rate > 6 ? 'good' : rate > 3 ? 'normal' : 'bad'"
+        >{{ rate.toFixed(2) }}</span>pt</span>
         <button type="button" class="info_button" v-on:click="$refs.info.show()">i</button>
       </h3>
       <div class="team_result">
@@ -54,6 +56,7 @@ export default {
     races: Array,
     team: Object,
     onPlayerChange: Function,
+    kind: { type: String, default: 'rate' },
   },
   components: {
     PlayerResultInput,
@@ -87,11 +90,27 @@ export default {
                               .sort((a, b) => b - a) // 降順ソートして先頭から20こ(勝率計算対象)を切り出す
                               .slice(0, 20);
       
-      // チームの最高順位
+      // チームの順位
       const team_result = indecies.map(x => results.filter(r => r.race_index == x))
-                                  .map(x => x.map(r => r.ranking))
-                                  .map(x => Math.min(...x));
-      return team_result.filter(x => x == 1).length / indecies.length;
+                                  .map(x => x.map(r => r.ranking));
+      if (this.kind == 'rate') {
+        // 1位の率
+        return team_result.map(x => Math.min(...x))
+                          .filter(x => x == 1).length / indecies.length;
+      } else if (this.kind == 'point') {
+        const point = value => {
+          if (value == 1) return 5;
+          if (value == 2) return 3;
+          if (value == 3) return 2;
+          if (value == 4) return 1;
+          if (value == 5) return 1;
+          return 0;
+        }
+        console.log(team_result.map(x => x.reduce((a, b) => a + point(b), 0)));
+        return team_result.map(x => x.reduce((a, b) => a + point(b), 0))
+                          .reduce((a, b) => a + b) / indecies.length;
+      }
+      throw `No implements kind ${this.kind}`;
     }
   },
   methods: {

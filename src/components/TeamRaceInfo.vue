@@ -3,22 +3,63 @@
     <div v-on:click.stop="() => {}">
       <h1>{{ ({sprinter: '短距離', mile: 'マイル', middle: '中距離', stayer: '長距離', dirt: 'ダート'})[name] }}</h1>
       <p>全{{ formatted.length }}戦</p>
-      <h4>回り</h4>
-      <div class="ratio_graph"><span v-for="f in count.field.filter(x => x[1])" :style="`flex-grow: ${f[1]};`" :key="f[0]">{{ f[0] }} {{ f[1] }}</span></div>
-      <h4>根幹</h4>
-      <div class="ratio_graph"><span v-for="f in count.root" :style="`flex-grow: ${f[1]};`" :key="f[0]">{{ f[0] }} {{ f[1] }}</span></div>
-      <h4>距離別出現頻度</h4>
-      <ul class="ratio_length">
-        <li v-for="l in count.length" :key="l[0]">
-          <span :style="`width: ${l[1] / count.all * 100}%;`">{{ l[0] }}</span>
-        </li>
-      </ul>
-      <h4>距離別勝利数</h4>
-      <ul class="ratio_length">
-        <li v-for="l in count.length" :key="l[0]" :title="`${l[1]}戦 ${l[2]}勝 ${(l[2] / l[1] * 100).toFixed(1)}%`">
-          <span :style="`width: ${l[2] / l[1] * 100}%;`">{{ l[0] }}</span>
-        </li>
-      </ul>
+
+      <div class="count">
+        <div class="rotation">
+          <h4>回り</h4>
+          <div class="ratio_graph"><span v-for="f in count.field.filter(x => x[1])" :style="`flex-grow: ${f[1]};`" :key="f[0]">{{ f[0] }} {{ f[1] }}</span></div>
+        </div>
+
+        <div class="weather">
+          <h4>天気</h4>
+          <div class="ratio_graph"><span v-for="f in count.weather.filter(x => x[1])" :style="`flex-grow: ${f[1]};`" :key="f[0]">{{ f[0] }} {{ f[1] }}</span></div>
+          <h4>天気別勝利比率</h4>
+          <ul class="ratio_length">
+            <li v-for="l in count.weather" :key="l[0]" :title="`${l[1]}戦 ${l[2]}勝 ${(l[2] / l[1] * 100).toFixed(1)}%`">
+              <span :style="`width: ${l[1] > 0 ? l[2] / l[1] * 100 : 0}%;`">{{ l[0] }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="weight">
+          <h4>バ場</h4>
+          <div class="ratio_graph"><span v-for="f in count.weight.filter(x => x[1])" :style="`flex-grow: ${f[1]};`" :key="f[0]">{{ f[0] }} {{ f[1] }}</span></div>
+          <h4>バ場別勝利比率</h4>
+          <ul class="ratio_length">
+            <li v-for="l in count.weight" :key="l[0]" :title="`${l[1]}戦 ${l[2]}勝 ${(l[2] / l[1] * 100).toFixed(1)}%`">
+              <span :style="`width: ${l[1] > 0 ? l[2] / l[1] * 100 : 0}%;`">{{ l[0] }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="season">
+          <h4>季節</h4>
+          <div class="ratio_graph"><span v-for="f in count.season.filter(x => x[1])" :style="`flex-grow: ${f[1]};`" :key="f[0]">{{ f[0] }} {{ f[1] }}</span></div>
+          <h4>季節別勝利比率</h4>
+          <ul class="ratio_length">
+            <li v-for="l in count.season" :key="l[0]" :title="`${l[1]}戦 ${l[2]}勝 ${(l[2] / l[1] * 100).toFixed(1)}%`">
+              <span :style="`width: ${l[1] > 0 ? l[2] / l[1] * 100 : 0}%;`">{{ l[0] }}</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="length">
+          <h4>根幹</h4>
+          <div class="ratio_graph"><span v-for="f in count.root" :style="`flex-grow: ${f[1]};`" :key="f[0]">{{ f[0] }} {{ f[1] }}</span></div>
+          <h4>距離別出現頻度</h4>
+          <ul class="ratio_length">
+            <li v-for="l in count.length" :key="l[0]">
+              <span :style="`width: ${l[1] > 0 ? l[1] / count.all * 100 : 0}%;`">{{ l[0] }}</span>
+            </li>
+          </ul>
+          <h4>距離別勝利比率</h4>
+          <ul class="ratio_length">
+            <li v-for="l in count.length" :key="l[0]" :title="`${l[1]}戦 ${l[2]}勝 ${(l[2] / l[1] * 100).toFixed(1)}%`">
+              <span :style="`width: ${l[1] > 0 ? l[2] / l[1] * 100 : 0}%;`">{{ l[0] }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -45,6 +86,9 @@ export default {
             field: t[0].field,
             clockwise: t[0].clockwise,
             best: Math.min(...ranking),
+            weather: t[0].weather,
+            weight: t[0].weight,
+            season: t[0].season,
             ranking
           };
       });
@@ -62,6 +106,20 @@ export default {
         ['直', 0]
       ];
       r.field[2][1] = r.all - r.field[0][1] - r.field[1][1];
+
+      [
+        ['weather', ['晴れ', '曇り', '雨', '雪']],
+        ['weight', ['良', '稍重', '重', '不良']],
+        ['season', ['春', '夏', '秋', '冬']]
+      ].forEach(q => {
+        r[q[0]] = q[1].map(x => {
+          const t = this.formatted.filter(r => r[q[0]] == x);
+          return [
+            x,
+            t.length,
+            t.filter(r => r.best == 1).length];
+        });
+      });
 
       const length = this.formatted.map(x => x.length);
       r.root = [
@@ -101,7 +159,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .team_info {
   display: flex;
   position: fixed;
@@ -197,4 +255,39 @@ export default {
 .ratio_length > li:nth-child(7) span {
   background-color: hsla(90, 70%, 70%, 1.0);
 }
+
+.count {
+  display: grid;
+}
+
+.count > * {
+  margin : 2em;
+  width: 12em;
+}
+
+.rotation {
+  grid-row: 1/2;
+  grid-column: 1/2;
+}
+
+.weather {
+  grid-row: 2/4;
+  grid-column: 1/2;
+}
+
+.season {
+  grid-row: 1/3;
+  grid-column: 2/3;
+}
+
+.weight {
+  grid-row: 3/5;
+  grid-column: 2/3;
+}
+
+.length {
+  grid-row: 1/4;
+  grid-column: 3/4;
+}
+
 </style>

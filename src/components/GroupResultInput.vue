@@ -1,11 +1,13 @@
 <template>
   <div style="text-align: center">
+    <label><input type="radio" name="team_result_kind" v-model="team_result_kind" value="rate" />勝率</label>
+    <label><input type="radio" name="team_result_kind" v-model="team_result_kind" value="point" />勝ち点</label>
     <div class="group_result">
-      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="sprinter" :races="sprinter" :team="formatted_teams.find(x => x.name == 'sprinter')" />
-      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="mile" :races="mile" :team="formatted_teams.find(x => x.name == 'mile')" />
-      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="middle" :races="middle" :team="formatted_teams.find(x => x.name == 'middle')" />
-      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="stayer" :races="stayer" :team="formatted_teams.find(x => x.name == 'stayer')" />
-      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="dirt" :races="dirt" :team="formatted_teams.find(x => x.name == 'dirt')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="sprinter" :kind="team_result_kind" :races="sprinter" :team="formatted_teams.find(x => x.name == 'sprinter')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="mile" :kind="team_result_kind" :races="mile" :team="formatted_teams.find(x => x.name == 'mile')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="middle" :kind="team_result_kind" :races="middle" :team="formatted_teams.find(x => x.name == 'middle')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="stayer" :kind="team_result_kind" :races="stayer" :team="formatted_teams.find(x => x.name == 'stayer')" />
+      <TeamResultInput :players="players" :onPlayerChange="onPlayerChange" ref="dirt" :kind="team_result_kind" :races="dirt" :team="formatted_teams.find(x => x.name == 'dirt')" />
     </div>
     <OpenCV style="display: none;" ref="opencv"
        :allow="require('../assets/template/allow.png')"
@@ -45,7 +47,7 @@ export default {
     onAddResult: Function,
   },
   data: function () {
-    return { opencv_status: 'ペースト可能', save_image: false };
+    return { opencv_status: 'ペースト可能', save_image: false, team_result_kind: "rate" };
   },
   computed: {
     sprinter: function () { return this.races.filter(x => x.field == 'turf' && x.length <= 1400).sort((a, b) => a.length == b.length ? a.clockwise - b.clockwise : a.length - b.length); },
