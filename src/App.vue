@@ -28,10 +28,17 @@
     <div class="data">
       <h1>データ管理</h1>
       今の記録を<button type="button" v-on:click="save(true)">ダウンロード</button>
-      ローカル<input type="file" v-on:change="load" />
+      ローカル<input type="file" v-on:change="load" ref="file" />
       <label><input type="checkbox" checked v-model="auto_save">ファイルの読み込み前に今の記録を自動でダウンロードする</label>
       <textarea v-show="false" v-model="encoded_data"></textarea>
       <p>リポジトリ: <a href="https://github.com/ixsiid/TeamHistory">Github</a></p>
+      <p class="button">DL</p>
+      <p class="button">UL</p>
+    </div>
+    <div class="ddata">
+      <button type="button" v-on:click="save(true)"><img src="./assets/icon/download.svg" /></button>
+      <button type="button" v-on:click="call_file"><img src="./assets/icon/upload.svg" /></button>
+      <div class="sub_menu"></div>
     </div>
     <Toast ref="toast" />
     <DebugView v-show="debug" />
@@ -210,6 +217,9 @@ export default {
 
       return Object.fromEntries(result);
     },
+    call_file() {
+      this.$refs.file.click();
+    },
   },
   mounted: function () {
     try {
@@ -237,7 +247,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -329,4 +339,26 @@ h1 > button {
   margin: 0.2em 2em 0.2em 0.05em;
 }
 
+.ddata {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ddata > button {
+  border: none;
+  border-radius: 50%;
+  padding: 1em;
+  margin: 1em;
+  width: 5em;
+  height: 5em;
+  background-color: #eee;
+  box-shadow: 0 0 0.3em 0 #222;
+}
+
+.ddata > button:hover {
+  background-color: #bbb;
+}
 </style>
