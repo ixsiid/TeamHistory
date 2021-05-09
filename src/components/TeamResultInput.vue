@@ -16,7 +16,7 @@
       <div class="team_result">
         <div class="player" v-for="(member, i) in team.members" :key="team.name + '_' + member + '_' + i">
           <button class="change_button" type="button" v-on:click="onPlayerChange(team.name, i)" title="入れ替え"></button>
-          <PlayerResultInput ref="player" :info="players.find(x => x.name == member)" :editable="!!member" />
+          <PlayerResultInput ref="player" :info="players.find(x => x.name == member)" :editable="!!member" :count="count" />
         </div>
       </div>
       <select class="race_selector" v-model="race">
@@ -57,6 +57,7 @@ export default {
     team: Object,
     onPlayerChange: Function,
     kind: { type: String, default: 'rate' },
+    count: { type: Number, default: 20 },
   },
   components: {
     PlayerResultInput,
@@ -88,7 +89,7 @@ export default {
       const indecies = results.map(x => x.race_index)
                               .filter((x, i, a) => a.indexOf(x) == i)
                               .sort((a, b) => b - a) // 降順ソートして先頭から20こ(勝率計算対象)を切り出す
-                              .slice(0, 20);
+                              .slice(0, this.count);
       
       // チームの順位
       const team_result = indecies.map(x => results.filter(r => r.race_index == x))
@@ -153,7 +154,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .team_result {
   text-align: center;
 }

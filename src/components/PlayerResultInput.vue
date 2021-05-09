@@ -4,6 +4,7 @@
       <p class="player_name">{{ info.name ? info.name : '未設定' }}</p>
       <p class="icon"><img v-bind:src="require(`../assets/character/${info.image}.png`)" :alt="info.image" :title="info.image" /></p>
       <p class="player_desc" :title="`[${grade.join('-')}]`">{{ result }}</p>
+      <p v-if="editable" class="player_desc">{{ point[0].toFixed(2) }} pt</p>
       <div v-if="editable" class="edit">
         <label class="a1 rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="1"><span><span>1</span></span></label>
         <label class="a2 rank"><input type="radio" :name="info.name + 'rank'" v-model="ranking" value="2"><span><span>2</span></span></label>
@@ -34,6 +35,7 @@ export default {
   props: {
     info: { type: Object, default: () => ({ name: undefined, image: 'mob', result: [] }) },
     editable: { type: Boolean, default: true },
+    count: { type: Number, default: 20 },
   },
   data: function () {
     return {
@@ -69,6 +71,18 @@ export default {
 
       return `${this.info.result.length}戦 ${this.grade[0]}勝`;
     },
+    point() {
+      const p = value => {
+        if (value == 1) return 5;
+        if (value == 2) return 3;
+        if (value == 3) return 2;
+        if (value == 4) return 1;
+        if (value == 5) return 1;
+        return 0;
+      };
+      const result = this.info.result.slice(-this.count);
+      return [result.reduce((a,b) => a + p(b.ranking), 0) / result.length, result.length];
+    }
   },
   methods: {
     windowLoad: function () {},
