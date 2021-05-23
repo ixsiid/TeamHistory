@@ -97,7 +97,36 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
+h1 {
+  text-align: center;
+  margin: 1em;
+}
+
+h1 > button {
+  margin-left: 3em;
+}
+
+.dialog_background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(128, 128, 128, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog {
+  background-color: #eff;
+  padding: 2em;
+  border-radius: 5em;
+  width: 60%;
+  text-align: center;
+}
+
 .selector {
   margin: 0.5em 3em;
   background-color: #ffe;
